@@ -41,8 +41,8 @@ class Gabor_Kernel:
                 y1 = (j - c1[1]) / self.size
                 x2 = (i - c2[0]) / self.size
                 y2 = (j - c2[1]) / self.size
-                value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x1*x1 + y1*y1)) +\
-                        self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x2*x2 + y2*y2))
+                value = self.K / (2 * (self.a/self.size)**2) * exp(-pi / ((self.a/self.size)**2) * (x1*x1 + y1*y1)) + \
+                        self.K / (2 * (self.a/self.size) ** 2) * exp(-pi / ((self.a/self.size) ** 2) * (x2*x2 + y2*y2))
                 img_frequency[i][j] = value
 
         cv2.namedWindow('Gaussian_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
