@@ -11,20 +11,19 @@ class Gabor_Kernel:
         self.K = K
         self.F0 = img_size * F_0
         self.omega_0 = omega_0
-        gaussian = Gaussian_Kernel(img_size, K, a)
-        harmonic = Harmonic_Kernel(img_size, F_0, omega_0)
-        self.img = np.multiply(gaussian.img, harmonic.img)
-        print(self.img)
+        self.gaussian_kernel = Gaussian_Kernel(img_size, K, a)
+        self.harmonic_kernel = Harmonic_Kernel(img_size, F_0, omega_0)
+        self.img = np.multiply(self.gaussian_kernel.img, self.harmonic_kernel.img)
 
     def spacial_display(self):
         cv2.namedWindow('Gabor_Kernel_spacial', cv2.WINDOW_AUTOSIZE)
-        cv2.imshow('Gabor_Kernel_spacial', self.img)
+        cv2.imshow('Gabor_Kernel_spacial', self.img/2+0.5)
         cv2.waitKey(0)
 
     def frequency_display(self):
-        cv2.namedWindow('Gaussian_Kernel_frequency', cv2.WINDOW_AUTOSIZE)
+        cv2.namedWindow('Gabor_Kernel_frequency', cv2.WINDOW_AUTOSIZE)
         img_frequency = spatial_to_frequency(self.img)
-        cv2.imshow('Gaussian_Kernel_frequency', img_frequency)
+        cv2.imshow('Gabor_Kernel_frequency', img_frequency)
         cv2.waitKey(0)
 
     # 理想状态下的频域图
@@ -41,17 +40,17 @@ class Gabor_Kernel:
                 y1 = (j - c1[1]) / self.size
                 x2 = (i - c2[0]) / self.size
                 y2 = (j - c2[1]) / self.size
-                value = self.K / (2 * (self.a/self.size)**2) * exp(-pi / ((self.a/self.size)**2) * (x1*x1 + y1*y1)) + \
-                        self.K / (2 * (self.a/self.size) ** 2) * exp(-pi / ((self.a/self.size) ** 2) * (x2*x2 + y2*y2))
+                value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x1*x1 + y1*y1)) + \
+                        self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x2*x2 + y2*y2))
                 img_frequency[i][j] = value
 
-        cv2.namedWindow('Gaussian_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
-        cv2.imshow('Gaussian_Kernel_simulate_frequency', img_frequency)
+        cv2.namedWindow('Gabor_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
+        cv2.imshow('Gabor_Kernel_simulate_frequency', img_frequency)
         cv2.waitKey(0)
 
 
 if __name__ == '__main__':
-    gabor = Gabor_Kernel(img_size=256, K=1, a=0.06, F_0=0.15, omega_0=0.2)
+    gabor = Gabor_Kernel(img_size=256, K=0.7, a=0.04, F_0=0.15, omega_0=0.2)
     gabor.spacial_display()
     gabor.frequency_display()
     gabor.frequency_simulate_display()

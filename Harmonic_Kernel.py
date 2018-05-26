@@ -33,8 +33,8 @@ class Harmonic_Kernel:
         dx = int(self.F0 * sin(self.omega_0))
         dy = int(self.F0 * cos(self.omega_0))
         half_size = int(self.size/2)
-        img_frequency[half_size + dx, half_size - dy] = 1
-        img_frequency[half_size - dx, half_size + dy] = 1
+        img_frequency[half_size + dx, half_size + dy] = 1
+        img_frequency[half_size - dx, half_size - dy] = 1
 
         cv2.namedWindow('Harmonic_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('Harmonic_Kernel_simulate_frequency', img_frequency)
@@ -42,7 +42,7 @@ class Harmonic_Kernel:
 
 
 if __name__ == '__main__':
-    hk = Harmonic_Kernel(img_size=512, F_0=0.15, omega_0=0.7)
+    hk = Harmonic_Kernel(img_size=512, F_0=0.15, omega_0=0.2)
     hk.spacial_display()
     hk.frequency_display()
     hk.frequency_simulate_display()

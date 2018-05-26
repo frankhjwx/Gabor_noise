@@ -34,7 +34,7 @@ class Gaussian_Kernel:
             for j in range(self.size):
                 x = (i-self.size/2)/self.size
                 y = (j-self.size/2)/self.size
-                value = self.K / (2 * (self.a/self.size)**2) * exp(-pi / ((self.a/self.size)**2) * (x*x + y*y))
+                value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x * x + y * y))
                 img_frequency[i][j] = value
 
         cv2.namedWindow('Gaussian_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
