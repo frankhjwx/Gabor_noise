@@ -12,6 +12,7 @@ class Gabor_Noise:
         self.F_0 = F_0
         self.omega_0 = omega_0
         self.point_num = point_num
+        self.anisotropic = anisotropic
         scn = Sparse_Convolution_Noise(width=size, height=size, grid_size=grid_size, point_num=point_num)
         gabor_kernel = Gabor_Kernel(img_size=size, K=K, a=a, F_0=F_0, omega_0=omega_0)
         if anisotropic:
@@ -67,15 +68,24 @@ class Gabor_Noise:
         half_size = int(self.size / 2)
         c1 = [half_size + dx, half_size + dy]
         c2 = [half_size - dx, half_size - dy]
-        for i in range(self.size):
-            for j in range(self.size):
-                x1 = (i - c1[0]) / self.size
-                y1 = (j - c1[1]) / self.size
-                x2 = (i - c2[0]) / self.size
-                y2 = (j - c2[1]) / self.size
-                value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x1 * x1 + y1 * y1)) + \
-                        self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x2 * x2 + y2 * y2))
-                img_frequency[i][j] = value
+        d2 = (dx**2+dy**2)/(self.size**2)
+        if self.anisotropic:
+            for i in range(self.size):
+                for j in range(self.size):
+                    x1 = (i - c1[0]) / self.size
+                    y1 = (j - c1[1]) / self.size
+                    x2 = (i - c2[0]) / self.size
+                    y2 = (j - c2[1]) / self.size
+                    value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x1 * x1 + y1 * y1)) + \
+                            self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * (x2 * x2 + y2 * y2))
+                    img_frequency[i][j] = value
+        else:
+            for i in range(self.size):
+                for j in range(self.size):
+                    d1 = ((i-half_size)**2 + (j-half_size)**2) / (self.size**2)
+                    print(abs(d1-d2))
+                    value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * abs(d1-d2))
+                    img_frequency[i][j] = value
 
         cv2.namedWindow('Gabor_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('Gabor_Kernel_simulate_frequency', img_frequency)
@@ -84,7 +94,7 @@ class Gabor_Noise:
 
 if __name__ == '__main__':
     #gabor = Gabor_Noise(size=128, grid_size=50, point_num=16, anisotropic=False)
-    gabor = Gabor_Noise(point_num=16, anisotropic=False)
+    gabor = Gabor_Noise(size=256, point_num=4, anisotropic=False)
     gabor.spacial_display()
     gabor.frequency_display()
     gabor.frequency_simulate_display()
