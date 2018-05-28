@@ -1,7 +1,6 @@
 from Gabor_Kernel import *
 from Sparse_Convolution_Noise import *
-import scipy.ndimage
-
+import Gabor_Core
 
 class Gabor_Noise:
     def __init__(self, size=512, grid_size=50, point_num=64, K=1, a=0.06, F_0=0.1, omega_0=0.7, anisotropic=True):
@@ -20,33 +19,9 @@ class Gabor_Noise:
         else:
             self.img = np.zeros([size, size])
             # tbd
-            for i in range(self.size):
-                for j in range(self.size):
-                    print(i,j)
-                    self.img[i][j] = self.noise(i, j)
-
-    def gabor(self, K, a, F_0, omega_0, x, y):
-        return K * exp(-pi * (a ** 2) * (x * x + y * y)) * cos(2*pi*F_0*(x*cos(omega_0) + y*sin(omega_0)))
-
-    def noise(self, x, y):
-        x /= self.grid_size
-        y /= self.grid_size
-        sum = 0
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                sum += self.cell(int(x)+i, int(y)+j, x - int(x) - i, y - int(y) - j)
-        return sum
-
-    def cell(self, i, j, x, y):
-        seed(i*self.size+j)
-        sum = 0
-        for i in range(self.point_num):
-            x_i = random()
-            y_i = random()
-            w_i = random()*2 - 1
-            omega_0_i = random()*2*pi
-            sum += w_i * self.gabor(self.K, self.a, self.F_0, omega_0_i, (x-x_i)*self.grid_size, (y-y_i)*self.grid_size)
-        return sum
+            self.img = Gabor_Core.gabor_noise(self.size, self.grid_size, self.point_num, self.K,
+                                              self.a, self.F_0, self.omega_0, anisotropic)
+            print(self.img)
 
     def spacial_display(self):
         cv2.namedWindow('Gabor_Noise_spacial', cv2.WINDOW_AUTOSIZE)
@@ -83,8 +58,10 @@ class Gabor_Noise:
             for i in range(self.size):
                 for j in range(self.size):
                     d1 = ((i-half_size)**2 + (j-half_size)**2) / (self.size**2)
-                    print(abs(d1-d2))
-                    value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * abs(d1-d2))
+                    d = abs(d1-d2)
+                    if d < 0.002:
+                        d = 0.002
+                    value = self.K * exp(-pi * ((self.size / 2 / self.a) ** 2) * d)
                     img_frequency[i][j] = value
 
         cv2.namedWindow('Gabor_Kernel_simulate_frequency', cv2.WINDOW_AUTOSIZE)
@@ -92,10 +69,10 @@ class Gabor_Noise:
         cv2.waitKey(0)
 
 
+
 if __name__ == '__main__':
     #gabor = Gabor_Noise(size=128, grid_size=50, point_num=16, anisotropic=False)
-    gabor = Gabor_Noise(size=256, point_num=4, anisotropic=False)
+    gabor = Gabor_Noise(size=512, point_num=16, anisotropic=True)
     gabor.spacial_display()
     gabor.frequency_display()
     gabor.frequency_simulate_display()
-
