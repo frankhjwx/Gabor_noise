@@ -1,6 +1,5 @@
 from Gaussian_Kernel import *
 from Harmonic_Kernel import *
-import numpy as np
 import cv2
 from FFT import *
 
