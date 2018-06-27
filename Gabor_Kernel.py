@@ -14,16 +14,18 @@ class Gabor_Kernel:
         self.harmonic_kernel = Harmonic_Kernel(img_size, F_0, omega_0)
         self.img = np.multiply(self.gaussian_kernel.img, self.harmonic_kernel.img)
 
-    def spacial_display(self):
+    def spacial_display(self, wait=True):
         cv2.namedWindow('Gabor_Kernel_spacial', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('Gabor_Kernel_spacial', self.img/2+0.5)
-        cv2.waitKey(0)
+        if wait:
+            cv2.waitKey(0)
 
-    def frequency_display(self):
+    def frequency_display(self, wait=True):
         cv2.namedWindow('Gabor_Kernel_frequency', cv2.WINDOW_AUTOSIZE)
         img_frequency = spatial_to_frequency(self.img)
         cv2.imshow('Gabor_Kernel_frequency', img_frequency)
-        cv2.waitKey(0)
+        if wait:
+            cv2.waitKey(0)
 
     # 理想状态下的频域图
     def frequency_simulate_display(self):
@@ -49,7 +51,7 @@ class Gabor_Kernel:
 
 
 if __name__ == '__main__':
-    gabor = Gabor_Kernel(img_size=256, K=0.7, a=0.04, F_0=0.15, omega_0=0.2)
+    gabor = Gabor_Kernel(img_size=256, K=2, a=0.04, F_0=0.06, omega_0=0.2)
     gabor.spacial_display()
     gabor.frequency_display()
     gabor.frequency_simulate_display()

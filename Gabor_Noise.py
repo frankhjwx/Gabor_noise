@@ -23,7 +23,8 @@ class Gabor_Noise:
             # tbd
             for i in range(self.size):
                 for j in range(self.size):
-                    print("process:{0}%".format(round((i*self.size+j) * 100 / (self.size**2))), end="\r")
+                    #print("process:{0}%".format(round((i*self.size+j) * 100 / (self.size**2))), end="\r")
+                    print("process:{0}%".format(round((i * self.size + j) * 100 / (self.size ** 2))))
                     self.img[i][j] = self.noise(i, j)
 
     def gabor(self, K, a, F_0, omega_0, x, y):
@@ -51,16 +52,18 @@ class Gabor_Noise:
             sum += w_i * self.gabor(self.K, self.a, self.F_0, omega_0_i, (x-x_i)*self.grid_size, (y-y_i)*self.grid_size)
         return sum
 
-    def spacial_display(self):
+    def spacial_display(self, wait=True):
         cv2.namedWindow('Gabor_Noise_spacial', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('Gabor_Noise_spacial', self.img/2+0.5)
-        cv2.waitKey(0)
+        if wait:
+            cv2.waitKey(0)
 
-    def frequency_display(self):
+    def frequency_display(self, wait=True):
         cv2.namedWindow('Gabor_Noise_frequency', cv2.WINDOW_AUTOSIZE)
         img_frequency = spatial_to_frequency(self.img)
         cv2.imshow('Gabor_Noise_frequency', img_frequency)
-        cv2.waitKey(0)
+        if wait:
+            cv2.waitKey(0)
 
     def frequency_simulate_calculate(self):
         img_frequency = np.zeros([self.size, self.size])
@@ -70,7 +73,7 @@ class Gabor_Noise:
         c1 = [0.5 + dx, 0.5 + dy]
         c2 = [0.5 - dx, 0.5 - dy]
         lambda_energy_anisotropic = 0.2
-        lambda_energy_isotropic = 0.175
+        lambda_energy_isotropic = 0.26
         d2 = (dx ** 2 + dy ** 2)
         if self.anisotropic:
             for i in range(self.size):
@@ -112,8 +115,7 @@ class Gabor_Noise:
 
 if __name__ == '__main__':
     #gabor = Gabor_Noise(size=128, grid_size=50, point_num=16, anisotropic=False)
-    gabor = Gabor_Noise(size=256, point_num=16, anisotropic=True)
+    gabor = Gabor_Noise(size=512, point_num=24, K=1, a=0.06, F_0=0.2, omega_0=0.7, anisotropic=True)
     gabor.spacial_display()
     gabor.frequency_display()
-    gabor.frequency_simulate_display()
     gabor.sparse_convolution_noise_display()

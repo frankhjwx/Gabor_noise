@@ -42,7 +42,7 @@ class Harmonic_Kernel:
 
 
 if __name__ == '__main__':
-    hk = Harmonic_Kernel(img_size=512, F_0=0.15, omega_0=0.2)
+    hk = Harmonic_Kernel(img_size=512, F_0=0.06, omega_0=0.2)
     hk.spacial_display()
     hk.frequency_display()
     hk.frequency_simulate_display()

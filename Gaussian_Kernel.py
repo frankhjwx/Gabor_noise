@@ -43,7 +43,7 @@ class Gaussian_Kernel:
 
 
 if __name__ == '__main__':
-    gs = Gaussian_Kernel(img_size=256, K=5, a=0.1)
+    gs = Gaussian_Kernel(img_size=256, K=0.7, a=0.02)
     gs.spacial_display()
     gs.frequency_display()
     gs.frequency_simulate_display()
